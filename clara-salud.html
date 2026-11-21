@@ -1,144 +1,237 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Clara Salud - Sistema de Citas Médicas</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f7fb;
-            color: #1e293b;
-            margin: 0;
-            padding: 20px;
-        }
-        header {
-            background-color: #ffffff;
-            padding: 15px 30px;
-            border-radius: 12px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.05);
-            margin-bottom: 25px;
-        }
-        .logo {
-            font-size: 22px;
-            font-weight: bold;
-            color: #2563eb;
-        }
-        .contenedor {
-            max-width: 900px;
-            margin: 0 auto;
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
-        }
-        .tarjeta {
-            background: white;
-            padding: 25px;
-            border-radius: 16px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.06);
-        }
-        h2 {
-            margin-top: 0;
-            color: #0f172a;
-            font-size: 20px;
-        }
-        label {
-            display: block;
-            margin-top: 12px;
-            font-weight: bold;
-            font-size: 14px;
-        }
-        select, input {
-            width: 100%;
-            padding: 10px;
-            margin-top: 5px;
-            border: 1px solid #cbd5e1;
-            border-radius: 8px;
-            box-sizing: border-box;
-        }
-        button {
-            background-color: #2563eb;
-            color: white;
-            border: none;
-            padding: 12px 20px;
-            border-radius: 8px;
-            font-weight: bold;
-            cursor: pointer;
-            margin-top: 18px;
-            width: 100%;
-        }
-        .ficha {
-            background-color: #f8fafc;
-            border: 1px solid #e2e8f0;
-            padding: 15px;
-            border-radius: 10px;
-            margin-top: 12px;
-        }
-        .alergia {
-            background-color: #fef3c7;
-            color: #92400e;
-            padding: 10px;
-            border-radius: 8px;
-            margin-top: 10px;
-            font-size: 14px;
-        }
-    </style>
-</head>
-<body>
+<title>Clara Salud</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Fraunces:opsz,wght@9..144,600;9..144,700&display=swap">
+<style>
+/* Layout: sticky top bar with view switch (Paciente / Médico), one centered column of white cards on a pale blue ground. */
+:root{
+  --bg:#f1f5ff; --surface:#ffffff; --ink:#1b2a5c; --muted:#6a7aa3; --line:#dde5f7;
+  --accent:#4b55d6; --accent-ink:#ffffff; --tint:#e8f0fe; --warn-bg:#fff7ea; --warn-line:#f4e1bd; --warn-ink:#7a5a22;
+  --shadow:0 18px 50px rgba(75,85,214,.10);
+  --display:"Fraunces",Georgia,serif; --body:"DM Sans",system-ui,sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0f1426; --surface:#171e38; --ink:#e8ecff; --muted:#93a0c9; --line:#2a3358;
+  --accent:#7a85ff; --accent-ink:#0f1426; --tint:#222c55; --warn-bg:#2b2616; --warn-line:#4a4022; --warn-ink:#e6cf93;
+  --shadow:0 18px 50px rgba(0,0,0,.35); color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0f1426; --surface:#171e38; --ink:#e8ecff; --muted:#93a0c9; --line:#2a3358;
+  --accent:#7a85ff; --accent-ink:#0f1426; --tint:#222c55; --warn-bg:#2b2616; --warn-line:#4a4022; --warn-ink:#e6cf93;
+  --shadow:0 18px 50px rgba(0,0,0,.35); color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font:400 15px/1.5 var(--body);padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:0}
+button{font:inherit;color:inherit;cursor:pointer}
+:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.wrap{max-width:920px;margin:0 auto}
+header.top{display:flex;align-items:center;gap:14px;flex-wrap:wrap;padding:14px 0}
+.brand{display:flex;align-items:center;gap:10px;font-weight:700;font-size:18px}
+.logo{width:34px;height:34px;border-radius:10px;background:var(--accent);color:var(--accent-ink);display:grid;place-items:center;font-size:22px;font-weight:500;line-height:1}
+.switch{margin-left:auto;display:flex;background:var(--tint);border-radius:999px;padding:4px;gap:2px}
+.switch button{border:0;background:none;padding:7px 16px;border-radius:999px;font-weight:700;font-size:13px;color:var(--muted)}
+.switch button[aria-selected="true"]{background:var(--accent);color:var(--accent-ink)}
+.pill{background:var(--tint);color:var(--accent);font-size:12px;font-weight:700;padding:5px 12px;border-radius:999px;white-space:nowrap}
+.eyebrow{font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--accent)}
+h1,h2,h3{font-family:var(--display);margin:0;text-wrap:balance}
+h1{font-size:clamp(28px,5vw,38px);line-height:1.15;margin-top:8px}
+h2{font-size:24px;margin-top:6px}
+.sub{color:var(--muted);margin:6px 0 0}
+main{padding:36px 0 48px}
+.steps{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:26px 0 22px;padding:0;list-style:none}
+.steps li{display:flex;align-items:center;gap:10px;font-weight:700;font-size:14px;min-width:0}
+.steps .n{flex:none;width:30px;height:30px;border-radius:50%;display:grid;place-items:center;font-size:13px;border:2px solid var(--line);color:var(--muted)}
+.steps li.done .n{background:var(--tint);border-color:var(--tint);color:var(--accent)}
+.steps li.now .n{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.steps li.todo{color:var(--muted)}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:28px;padding:32px;box-shadow:var(--shadow)}
+.grid{display:grid;gap:14px;margin:22px 0 26px}
+.g3{grid-template-columns:repeat(auto-fit,minmax(190px,1fr))}
+.opt{text-align:left;background:var(--surface);border:1.5px solid var(--line);border-radius:18px;padding:18px;min-width:0;display:flex;flex-direction:column;gap:14px;min-height:92px;justify-content:space-between}
+.opt:hover{border-color:var(--accent)}
+.opt[aria-pressed="true"]{background:var(--tint);border-color:var(--accent)}
+.opt .ic{font-size:20px;color:var(--ink)}
+.opt b{font-size:15px}
+.opt small{display:block;color:var(--muted);font-size:14px}
+.avatar{width:46px;height:46px;border-radius:14px;background:var(--tint);color:var(--accent);display:grid;place-items:center;font-weight:700;font-size:17px}
+.actions{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.btn{border:0;border-radius:12px;padding:12px 22px;font-weight:700;background:var(--accent);color:var(--accent-ink)}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.btn.ghost{background:var(--surface);color:var(--ink);border:1px solid var(--line)}
+.sched{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);gap:24px;margin:22px 0 26px}
+.cal{border:1px solid var(--line);border-radius:20px;padding:16px}
+.calhead{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;font-weight:700}
+.calhead button{width:34px;height:34px;border-radius:10px;border:1px solid var(--line);background:var(--surface)}
+.calhead button:disabled{opacity:.35;cursor:not-allowed}
+.dow,.days{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;text-align:center}
+.dow{font-size:11px;font-weight:700;color:var(--muted);margin-bottom:6px}
+.days button{aspect-ratio:1;max-height:54px;border:1.5px solid transparent;border-radius:10px;background:none;font-weight:500;font-variant-numeric:tabular-nums}
+.days button:disabled{color:var(--muted);opacity:.45;cursor:default}
+.days button:not(:disabled):hover{background:var(--tint)}
+.days button[aria-pressed="true"]{background:var(--tint);border-color:var(--accent);font-weight:700}
+.days .blank{visibility:hidden}
+.slots h3{font-family:var(--body);font-size:16px;font-weight:700}
+.slots p{font-size:12px;color:var(--muted);margin:4px 0 12px}
+.slot{display:block;width:100%;margin-bottom:10px;padding:12px;text-align:center;font-weight:500;border:1.5px solid var(--line);border-radius:12px;background:var(--surface);font-variant-numeric:tabular-nums}
+.slot:hover{border-color:var(--accent)}
+.slot[aria-pressed="true"]{background:var(--tint);border-color:var(--accent);font-weight:700}
+.hint{color:var(--muted);font-size:14px}
+dl.sum{margin:22px 0 16px;border:1px solid var(--line);border-radius:18px;overflow:hidden}
+dl.sum div{padding:14px 18px;border-top:1px solid var(--line)}
+dl.sum div:first-child{border-top:0}
+dl.sum dt{font-size:13px;font-weight:500;color:var(--muted)}
+dl.sum dd{margin:2px 0 0;font-weight:700}
+.note{background:var(--tint);border-radius:12px;padding:12px 16px;font-size:14px;margin:0 0 22px}
+.ok{text-align:center;padding:24px 0}
+.ok .tick{width:64px;height:64px;border-radius:50%;background:var(--accent);color:var(--accent-ink);display:grid;place-items:center;font-size:32px;margin:0 auto 16px}
+.ok .actions{justify-content:center;margin-top:20px}
+/* doctor view */
+.doc{display:grid;grid-template-columns:minmax(0,300px) minmax(0,1fr);gap:22px;align-items:start;margin-top:18px}
+.agenda{padding:22px}
+.agenda header{display:flex;justify-content:space-between;align-items:center}
+.count{background:var(--tint);color:var(--accent);font-size:12px;font-weight:700;border-radius:999px;padding:3px 10px}
+.appt{display:block;width:100%;text-align:left;margin-top:12px;border:1.5px solid var(--line);border-radius:16px;padding:12px 14px;background:var(--surface)}
+.appt:hover{border-color:var(--accent)}
+.appt[aria-pressed="true"]{background:var(--tint);border-color:var(--accent)}
+.appt .t{font-size:12px;font-weight:700;color:var(--accent)}
+.appt b{display:block;font-size:16px;margin-top:2px}
+.appt span.d{color:var(--muted);font-size:13px}
+.ficha{padding:26px}
+.fhead{display:flex;gap:12px;align-items:center;padding-bottom:16px;border-bottom:1px solid var(--line);margin-bottom:18px}
+.pt{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:16px}
+.pt .avatar{width:52px;height:52px}
+.pt .who{flex:1;min-width:140px}
+.pt .who b{font-size:19px;display:block}
+.pt .who span{color:var(--muted);font-size:13px}
+.box{border:1px solid var(--line);border-radius:14px;padding:14px 16px;min-width:0}
+.box h4{margin:0 0 6px;font-size:14px}
+.box p{margin:0;color:var(--muted);font-size:14px}
+.box.tint{background:var(--tint);border-color:var(--tint)}
+.box.warn{background:var(--warn-bg);border-color:var(--warn-line)}
+.box.warn p{color:var(--warn-ink)}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:12px 0}
+footer{color:var(--muted);font-size:12px;padding-bottom:32px}
+@media (max-width:700px){
+  .steps{grid-template-columns:1fr 1fr}
+  .card{padding:22px 18px;border-radius:22px}
+  .sched,.doc,.two{grid-template-columns:1fr}
+  .switch{margin-left:0;order:3;width:100%}.switch button{flex:1}
+}
+@media (prefers-reduced-motion:no-preference){.card{animation:in .25s ease-out}@keyframes in{from{opacity:.4;transform:translateY(6px)}}}
+</style>
 
-    <header>
-        <div class="logo">➕ Clara Salud</div>
-        <span>Tu salud, a tu ritmo</span>
-    </header>
-
-    <div class="contenedor">
-        <!-- Módulo Paciente: Agendamiento -->
-        <div class="tarjeta">
-            <h2>📅 Agendar Próxima Cita</h2>
-            <label>1. Especialidad</label>
-            <select>
-                <option>Medicina general</option>
-                <option>Dermatología</option>
-                <option>Pediatría</option>
-            </select>
-
-            <label>2. Especialista</label>
-            <select>
-                <option>Dra. María Salazar</option>
-            </select>
-
-            <label>3. Fecha y Hora</label>
-            <input type="date" value="2026-10-30">
-            <select>
-                <option>09:00 AM</option>
-                <option>10:30 AM</option>
-                <option selected>15:00 PM</option>
-                <option>16:30 PM</option>
-            </select>
-
-            <button onclick="alert('Cita confirmada con la Dra. María Salazar')">Confirmar Cita →</button>
-        </div>
-
-        <!-- Módulo Médico: Consulta Clínica -->
-        <div class="tarjeta">
-            <h2>🩺 Panel de Consulta Médica</h2>
-            <p><strong>Paciente:</strong> Elena Morales (48 años)</p>
-            <div class="ficha">
-                <strong>Motivo de consulta:</strong><br>
-                Control periódico y revisión del plan de seguimiento.
-            </div>
-            <div class="ficha">
-                <strong>Diagnóstico / Historial:</strong><br>
-                Hipertensión arterial, en seguimiento.
-            </div>
-            <div class="alergia">
-                ⚠️ <strong>Alergias:</strong> Penicilina
-            </div>
-        </div>
+<div class="wrap">
+  <header class="top">
+    <div class="brand"><span class="logo" aria-hidden="true">+</span>Clara Salud</div>
+    <span class="pill" id="tag">Demo interactiva</span>
+    <div class="switch" role="tablist" aria-label="Vista">
+      <button role="tab" id="tab-paciente" aria-selected="true">Paciente</button>
+      <button role="tab" id="tab-medico" aria-selected="false">Médico</button>
     </div>
+  </header>
+  <main id="app"></main>
+  <footer>Clara Salud · Diseño demostrativo. Los horarios y los pacientes son ilustrativos y no se reserva ninguna cita real.</footer>
+</div>
 
-</body>
-</html>
+<script>
+const SPECS=[
+ {id:"gen",name:"Medicina general",ic:"+",doc:{n:"Dra. María Salazar",i:"MS"}},
+ {id:"der",name:"Dermatología",ic:"◌",doc:{n:"Dr. Carlos Vera",i:"CV"}},
+ {id:"ped",name:"Pediatría",ic:"♡",doc:{n:"Dra. Lucía Paredes",i:"LP"}}];
+const TIMES=["09:00","10:30","15:00","16:30"];
+const MONTHS=["Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre"];
+const DAYS=["Domingo","Lunes","Martes","Miércoles","Jueves","Viernes","Sábado"];
+const FIRST=new Date(2026,9,28), MINM=9, MAXM=11;
+const PATIENTS=[
+ {t:"09:00",n:"Elena Morales",d:"Control de seguimiento",i:"EM",age:48,kind:"Seguimiento",why:"Control periódico y revisión del plan de seguimiento.",hist:"Antecedente de hipertensión arterial. Controles periódicos registrados en esta ficha de ejemplo.",dx:"Hipertensión arterial, en seguimiento.",al:"Penicilina (dato ficticio)."},
+ {t:"10:30",n:"Andrés Rivas",d:"Revisión de resultados",i:"AR",age:35,kind:"Resultados",why:"Revisión de resultados de laboratorio solicitados en la consulta anterior.",hist:"Sin antecedentes relevantes. Chequeo anual registrado en esta ficha de ejemplo.",dx:"Colesterol levemente elevado, en observación.",al:"Sin alergias conocidas (dato ficticio)."},
+ {t:"12:00",n:"Lucía Herrera",d:"Consulta de seguimiento",i:"LH",age:62,kind:"Seguimiento",why:"Seguimiento de tratamiento y ajuste de medicación.",hist:"Antecedente de diabetes tipo 2. Controles de glucosa registrados en esta ficha de ejemplo.",dx:"Diabetes tipo 2, controlada.",al:"Sulfas (dato ficticio)."}];
+
+const S={view:"paciente",step:1,spec:"gen",doc:null,date:null,time:null,done:false,vy:2026,vm:9,pat:0};
+const $=s=>document.querySelector(s), app=$("#app");
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const spec=()=>SPECS.find(x=>x.id===S.spec);
+const fmt=d=>`${DAYS[d.getDay()]}, ${d.getDate()} de ${MONTHS[d.getMonth()].toLowerCase()} de ${d.getFullYear()}`;
+
+function stepper(){
+  const L=["Especialidad","Médico","Fecha y Hora","Confirmación"];
+  return `<ol class="steps">${L.map((l,i)=>{const n=i+1,c=S.done||n<S.step?"done":n===S.step?"now":"todo";
+   return `<li class="${c}"${n===S.step&&!S.done?' aria-current="step"':''}><span class="n">${n}</span>${l}</li>`}).join("")}</ol>`;
+}
+function head(){return `<div class="eyebrow">Tu salud, a tu ritmo</div><h1>Encuentra tu próxima cita</h1><p class="sub">Elige una especialidad, un profesional y el horario que prefieras.</p>`}
+function nav(back,next,label,ok){return `<div class="actions">${back?`<button class="btn ghost" data-go="${back[0]}">← ${back[1]}</button>`:"<span></span>"}<button class="btn" data-go="${next}" ${ok?"":"disabled"}>${label} →</button></div>`}
+
+function patient(){
+  let h=head()+stepper()+`<section class="card">`;
+  if(S.done){
+    h+=`<div class="ok"><div class="tick" aria-hidden="true">✓</div><h2>Cita registrada en la demo</h2>
+    <p class="sub">${esc(spec().doc.n)} · ${esc(spec().name)}<br>${fmt(S.date)} a las ${S.time}</p>
+    <p class="note" style="margin-top:20px">Es una demostración: no se reservó ninguna cita médica.</p>
+    <div class="actions"><button class="btn" id="again">Agendar otra cita</button></div></div></section>`;
+  }else if(S.step===1){
+    h+=`<div class="eyebrow">Paso 1 de 4</div><h2>¿Qué especialidad necesitas?</h2><p class="sub">Selecciona el tipo de atención que estás buscando.</p>
+    <div class="grid g3">${SPECS.map(s=>`<button class="opt" data-spec="${s.id}" aria-pressed="${S.spec===s.id}"><span class="ic" aria-hidden="true">${s.ic}</span><b>${s.name}</b></button>`).join("")}</div>
+    <div class="actions"><span></span><button class="btn" data-go="2">Elegir médico →</button></div>`;
+  }else if(S.step===2){
+    const d=spec().doc;
+    h+=`<div class="eyebrow">Paso 2 de 4</div><h2>Elige a tu especialista</h2><p class="sub">Selecciona el profesional con el que te gustaría atenderte.</p>
+    <div class="grid g3"><button class="opt" data-doc="1" aria-pressed="${S.doc===S.spec}"><span class="avatar">${d.i}</span><span><b>${d.n}</b><small>${spec().name}</small></span></button></div>`
+    +nav(["1","Volver"],"3","Elegir fecha",S.doc===S.spec);
+  }else if(S.step===3){
+    const first=new Date(S.vy,S.vm,1), off=(first.getDay()+6)%7, n=new Date(S.vy,S.vm+1,0).getDate();
+    let cells="";for(let i=0;i<off;i++)cells+=`<span class="blank"></span>`;
+    for(let d=1;d<=n;d++){const dt=new Date(S.vy,S.vm,d),ok=dt>=FIRST,sel=S.date&&+S.date===+dt;
+      cells+=`<button data-day="${d}" aria-pressed="${!!sel}" ${ok?"":"disabled"}>${d}</button>`}
+    h+=`<div class="eyebrow">Paso 3 de 4</div><h2>Encuentra tu momento</h2><p class="sub">Escoge una fecha futura y un horario ilustrativo disponible.</p>
+    <div class="sched"><div class="cal"><div class="calhead"><button data-m="-1" aria-label="Mes anterior" ${S.vm<=MINM?"disabled":""}>‹</button><span>${MONTHS[S.vm]} de ${S.vy}</span><button data-m="1" aria-label="Mes siguiente" ${S.vm>=MAXM?"disabled":""}>›</button></div>
+    <div class="dow">${["Lun","Mar","Mié","Jue","Vie","Sáb","Dom"].map(x=>`<span>${x}</span>`).join("")}</div><div class="days">${cells}</div></div>
+    <div class="slots"><h3>Horarios disponibles</h3><p>Horarios ilustrativos; no se actualizan en tiempo real.</p>
+    ${S.date?TIMES.map(t=>`<button class="slot" data-time="${t}" aria-pressed="${S.time===t}">${t}</button>`).join(""):`<p class="hint">Elige un día para ver los horarios.</p>`}</div></div>`
+    +nav(["2","Volver"],"4","Revisar selección",S.date&&S.time);
+  }else{
+    h+=`<div class="eyebrow">Paso 4 de 4</div><h2>Revisa tu selección</h2><p class="sub">Comprueba los detalles elegidos antes de continuar.</p>
+    <dl class="sum"><div><dt>Especialidad</dt><dd>${spec().name}</dd></div><div><dt>Profesional</dt><dd>${spec().doc.n}</dd></div><div><dt>Fecha</dt><dd>${fmt(S.date)}</dd></div><div><dt>Hora</dt><dd>${S.time}</dd></div></dl>
+    <p class="note">Demostración: los horarios no son datos en tiempo real. Confirmar aquí no reserva una cita médica.</p>
+    <div class="actions"><button class="btn ghost" data-go="3">← Cambiar fecha</button><button class="btn" id="confirm">Confirmar cita</button></div>`;
+  }
+  return h+(S.done?"":"</section>");
+}
+
+function medico(){
+  const p=PATIENTS[S.pat];
+  return `<div class="eyebrow">Panel de consulta</div><h1>Un día de atención, más claro.</h1><p class="sub">Consulta la agenda y revisa la ficha ilustrativa de cada paciente en un solo lugar.</p>
+  <p class="note" style="margin-top:18px">Datos ficticios para mostrar el diseño. Esta vista no contiene expedientes reales ni gestiona citas médicas.</p>
+  <div class="doc"><aside class="card agenda"><header><div><h3 style="font-size:22px">Citas del día</h3><p class="sub" style="font-size:13px">Agenda ilustrativa · 3 pacientes</p></div><span class="count">03</span></header>
+  ${PATIENTS.map((x,i)=>`<button class="appt" data-pat="${i}" aria-pressed="${i===S.pat}"><span class="t">${x.t} · Consulta general</span><b>${x.n}</b><span class="d">${x.d}</span></button>`).join("")}</aside>
+  <section class="card ficha"><div class="fhead"><span class="logo" style="background:var(--tint);color:var(--accent);font-size:18px">▤</span><div><div class="eyebrow" style="font-size:10px">Vista clínica</div><h3 style="font-size:22px">Ficha del paciente</h3></div></div>
+  <div class="pt"><span class="avatar">${p.i}</span><div class="who"><b>${p.n}</b><span>Paciente ficticia · ${p.age} años</span></div><span class="pill">${p.t} · ${p.kind}</span></div>
+  <div class="box tint"><h4>Motivo de consulta</h4><p>${p.why}</p></div>
+  <div class="two"><div class="box"><h4>Historial clínico</h4><p>${p.hist}</p></div><div class="box"><h4>Diagnósticos</h4><p>${p.dx}</p></div></div>
+  <div class="box warn"><h4>Alergias</h4><p>${p.al}</p></div></section></div>`;
+}
+
+function render(){
+  app.innerHTML=S.view==="paciente"?patient():medico();
+  $("#tab-paciente").setAttribute("aria-selected",S.view==="paciente");
+  $("#tab-medico").setAttribute("aria-selected",S.view==="medico");
+  $("#tag").textContent=S.view==="paciente"?"Demo interactiva":"Vista de ejemplo";
+}
+function setView(v){S.view=v;try{history.replaceState(null,"","#"+v)}catch(e){location.hash=v}render()}
+$("#tab-paciente").onclick=()=>setView("paciente");
+$("#tab-medico").onclick=()=>setView("medico");
+window.addEventListener("hashchange",()=>{const v=location.hash.slice(1);if((v==="paciente"||v==="medico")&&v!==S.view){S.view=v;render()}});
+
+app.addEventListener("click",e=>{
+  const t=e.target.closest("button");if(!t)return;
+  if(t.dataset.spec){if(S.spec!==t.dataset.spec){S.doc=null;S.date=null;S.time=null}S.spec=t.dataset.spec}
+  else if(t.dataset.doc)S.doc=S.spec;
+  else if(t.dataset.go){S.step=+t.dataset.go}
+  else if(t.dataset.day){S.date=new Date(S.vy,S.vm,+t.dataset.day);S.time=null}
+  else if(t.dataset.time)S.time=t.dataset.time;
+  else if(t.dataset.m){S.vm+=+t.dataset.m}
+  else if(t.dataset.pat)S.pat=+t.dataset.pat;
+  else if(t.id==="confirm")S.done=true;
+  else if(t.id==="again"){Object.assign(S,{step:1,spec:"gen",doc:null,date:null,time:null,done:false,vm:9})}
+  else return;
+  render();
+});
+const h0=location.hash.slice(1);if(h0==="medico")S.view="medico";
+render();
+</script>
