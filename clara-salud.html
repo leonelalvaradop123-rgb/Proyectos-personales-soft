@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clara Salud - Sistema de Citas Médicas</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f7fb;
+            color: #1e293b;
+            margin: 0;
+            padding: 20px;
+        }
+        header {
+            background-color: #ffffff;
+            padding: 15px 30px;
+            border-radius: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+            margin-bottom: 25px;
+        }
+        .logo {
+            font-size: 22px;
+            font-weight: bold;
+            color: #2563eb;
+        }
+        .contenedor {
+            max-width: 900px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        .tarjeta {
+            background: white;
+            padding: 25px;
+            border-radius: 16px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.06);
+        }
+        h2 {
+            margin-top: 0;
+            color: #0f172a;
+            font-size: 20px;
+        }
+        label {
+            display: block;
+            margin-top: 12px;
+            font-weight: bold;
+            font-size: 14px;
+        }
+        select, input {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            box-sizing: border-box;
+        }
+        button {
+            background-color: #2563eb;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 18px;
+            width: 100%;
+        }
+        .ficha {
+            background-color: #f8fafc;
+            border: 1px solid #e2e8f0;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 12px;
+        }
+        .alergia {
+            background-color: #fef3c7;
+            color: #92400e;
+            padding: 10px;
+            border-radius: 8px;
+            margin-top: 10px;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo">➕ Clara Salud</div>
+        <span>Tu salud, a tu ritmo</span>
+    </header>
+
+    <div class="contenedor">
+        <!-- Módulo Paciente: Agendamiento -->
+        <div class="tarjeta">
+            <h2>📅 Agendar Próxima Cita</h2>
+            <label>1. Especialidad</label>
+            <select>
+                <option>Medicina general</option>
+                <option>Dermatología</option>
+                <option>Pediatría</option>
+            </select>
+
+            <label>2. Especialista</label>
+            <select>
+                <option>Dra. María Salazar</option>
+            </select>
+
+            <label>3. Fecha y Hora</label>
+            <input type="date" value="2026-10-30">
+            <select>
+                <option>09:00 AM</option>
+                <option>10:30 AM</option>
+                <option selected>15:00 PM</option>
+                <option>16:30 PM</option>
+            </select>
+
+            <button onclick="alert('Cita confirmada con la Dra. María Salazar')">Confirmar Cita →</button>
+        </div>
+
+        <!-- Módulo Médico: Consulta Clínica -->
+        <div class="tarjeta">
+            <h2>🩺 Panel de Consulta Médica</h2>
+            <p><strong>Paciente:</strong> Elena Morales (48 años)</p>
+            <div class="ficha">
+                <strong>Motivo de consulta:</strong><br>
+                Control periódico y revisión del plan de seguimiento.
+            </div>
+            <div class="ficha">
+                <strong>Diagnóstico / Historial:</strong><br>
+                Hipertensión arterial, en seguimiento.
+            </div>
+            <div class="alergia">
+                ⚠️ <strong>Alergias:</strong> Penicilina
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>
